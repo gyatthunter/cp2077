@@ -22,7 +22,7 @@ const Navbar = () => (
       color: 'var(--neon-yellow)',
       textTransform: 'uppercase'
     }}>
-      CP_2077 <span style={{ color: '#fff', fontSize: '18px', verticalAlign: 'middle' }}>// NIVO_OS</span>
+      CP_2077 <span style={{ color: '#fff', fontSize: '18px', verticalAlign: 'middle' }}>// NICO_OS</span>
     </div>
     <div style={{ display: 'flex', gap: '40px' }}>
       <a href="#" className="glitch-text" style={{ color: 'var(--neon-yellow)', textDecoration: 'none', fontWeight: 'bold' }}>NETWORK</a>
