@@ -314,14 +314,14 @@ const Hero = () => {
         }}>
           [ SYSTEM STATUS: OPTIMIZED ]
         </p>
-        <h1 className="glitch-text glitch-always" data-text="Hello Chum" style={{
+        <h1 className="glitch-text glitch-always" data-text="Hello Choom" style={{
           fontSize: 'clamp(3rem, 10vw, 6rem)',
           lineHeight: '0.9',
           marginBottom: '30px',
           color: 'var(--neon-yellow)',
           textShadow: '0 0 20px rgba(252, 225, 0, 0.6), 0 0 60px rgba(252, 225, 0, 0.3), 3px 3px 0 var(--dark-black)'
         }}>
-          <CipherDecryption text="Hello Chum" /><br />
+          <CipherDecryption text="Hello Choom" /><br />
         </h1>
         <div style={{
           fontSize: '1.2rem',

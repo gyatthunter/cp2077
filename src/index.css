@@ -544,47 +544,43 @@ h1, h2, h3, h4, h5, h6 {
   position: fixed;
   top: 0;
   left: 0;
-  width: 24px;
-  height: 24px;
+  width: 30px;
+  height: 30px;
   pointer-events: none;
-  z-index: 10001; /* Highest */
+  z-index: 10001;
   transform: translate(-50%, -50%);
-  transition: transform 0.1s ease-out, width 0.2s, height 0.2s;
+  transition: width 0.15s ease, height 0.15s ease, border-radius 0.2s ease, border-color 0.2s ease;
   mix-blend-mode: difference;
-}
-
-.cyber-cursor::before, .cyber-cursor::after {
-  content: '';
-  position: absolute;
-  background: var(--neon-cyan);
-}
-
-.cyber-cursor::before {
-  top: 50%;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  transform: translateY(-50%);
+  border: 2px solid var(--neon-yellow);
+  box-shadow: 0 0 5px var(--neon-yellow);
 }
 
 .cyber-cursor::after {
-  top: 0;
+  content: '';
+  position: absolute;
+  top: 50%;
   left: 50%;
-  width: 2px;
-  height: 100%;
-  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  background-color: var(--neon-cyan);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
 }
 
 .cyber-cursor.hovering {
-  width: 40px;
-  height: 40px;
-  transform: translate(-50%, -50%) rotate(45deg);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 10px var(--neon-cyan);
 }
 
 .cyber-cursor.clicking {
-  width: 16px;
-  height: 16px;
-  transform: translate(-50%, -50%) rotate(90deg);
+  width: 15px;
+  height: 15px;
+  border-color: var(--neon-red);
+  box-shadow: 0 0 10px var(--neon-red);
+  border-radius: 0;
 }
 
 /* Global Shatter Glitch */
