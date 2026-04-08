@@ -160,6 +160,80 @@ const DataTicker = () => (
   </div>
 );
 
+const CyberCursor = () => {
+  const [pos, setPos] = useState({ x: -100, y: -100 });
+  const [isHovering, setIsHovering] = useState(false);
+  const [isClicking, setIsClicking] = useState(false);
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setPos({ x: e.clientX, y: e.clientY });
+      const el = e.target;
+      const interactive = el.closest('a, button, input, [role="button"], .cyber-card');
+      setIsHovering(!!interactive);
+    };
+    
+    const handleMouseDown = () => setIsClicking(true);
+    const handleMouseUp = () => setIsClicking(false);
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousedown', handleMouseDown);
+    window.addEventListener('mouseup', handleMouseUp);
+    
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mousedown', handleMouseDown);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, []);
+
+  return (
+    <div 
+      className={`cyber-cursor ${isHovering ? 'hovering' : ''} ${isClicking ? 'clicking' : ''}`}
+      style={{ left: pos.x, top: pos.y }}
+    />
+  );
+};
+
+const CipherDecryption = ({ text, delay = 0 }) => {
+  const [displayText, setDisplayText] = useState(text);
+  const [isHovered, setIsHovered] = useState(false);
+  
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+
+  useEffect(() => {
+    if (!isHovered) {
+      setDisplayText(text);
+      return;
+    }
+
+    let iterations = 0;
+    const interval = setInterval(() => {
+      setDisplayText(text.split('').map((char, index) => {
+        if (index < iterations) {
+          return text[index];
+        }
+        return chars[Math.floor(Math.random() * chars.length)];
+      }).join(''));
+
+      if (iterations >= text.length) clearInterval(interval);
+      iterations += 1/3;
+    }, 30);
+
+    return () => clearInterval(interval);
+  }, [isHovered, text]);
+
+  return (
+    <span 
+      onMouseEnter={() => setIsHovered(true)} 
+      onMouseLeave={() => setIsHovered(false)}
+      style={{ display: 'inline-block' }}
+    >
+      {displayText}
+    </span>
+  );
+};
+
 const Navbar = () => (
   <nav style={{
     display: 'flex',
@@ -247,7 +321,7 @@ const Hero = () => {
           color: 'var(--neon-yellow)',
           textShadow: '0 0 20px rgba(252, 225, 0, 0.6), 0 0 60px rgba(252, 225, 0, 0.3), 3px 3px 0 var(--dark-black)'
         }}>
-          Hello Chum<br />
+          <CipherDecryption text="Hello Chum" /><br />
         </h1>
         <div style={{
           fontSize: '1.2rem',
@@ -331,7 +405,7 @@ const FeatureCard = ({ id, title, desc }) => {
           marginBottom: '15px',
           color: 'var(--neon-yellow)'
         }}>
-          {title}
+          <CipherDecryption text={title} />
         </h3>
         <p style={{ fontSize: '0.95rem', color: '#bbb', lineHeight: '1.5' }}>{desc}</p>
         <div style={{
@@ -386,9 +460,21 @@ const Features = () => (
 
 function App() {
   const [booting, setBooting] = useState(true);
+  const [isGlitching, setIsGlitching] = useState(false);
+
+  useEffect(() => {
+    const triggerGlitch = () => {
+      setIsGlitching(true);
+      setTimeout(() => setIsGlitching(false), 300);
+    };
+
+    window.addEventListener('click', triggerGlitch);
+    return () => window.removeEventListener('click', triggerGlitch);
+  }, []);
 
   return (
-    <div className="app-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div className={`app-container ${isGlitching ? 'global-glitch-active' : ''}`} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <CyberCursor />
       <div className="scanlines"></div>
       {booting && <BootSequence onComplete={() => setBooting(false)} />}
       <ReactiveBackground />

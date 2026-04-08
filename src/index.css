@@ -32,6 +32,11 @@ body {
     linear-gradient(rgba(252, 225, 0, 0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(252, 225, 0, 0.03) 1px, transparent 1px);
   background-size: 30px 30px;
+  cursor: none !important;
+}
+
+a, button, input, [role="button"] {
+  cursor: none !important;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -532,4 +537,103 @@ h1, h2, h3, h4, h5, h6 {
 .cyber-card {
   transform-style: preserve-3d;
   perspective: 1000px;
+}
+
+/* Custom Cursor */
+.cyber-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 24px;
+  height: 24px;
+  pointer-events: none;
+  z-index: 10001; /* Highest */
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s ease-out, width 0.2s, height 0.2s;
+  mix-blend-mode: difference;
+}
+
+.cyber-cursor::before, .cyber-cursor::after {
+  content: '';
+  position: absolute;
+  background: var(--neon-cyan);
+}
+
+.cyber-cursor::before {
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  transform: translateY(-50%);
+}
+
+.cyber-cursor::after {
+  top: 0;
+  left: 50%;
+  width: 2px;
+  height: 100%;
+  transform: translateX(-50%);
+}
+
+.cyber-cursor.hovering {
+  width: 40px;
+  height: 40px;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.cyber-cursor.clicking {
+  width: 16px;
+  height: 16px;
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+/* Global Shatter Glitch */
+@keyframes global-shatter {
+  0% { transform: translate(0) skew(0deg); filter: blur(0px) hue-rotate(0deg); opacity: 1; }
+  20% { transform: translate(-10px, 5px) skew(10deg); filter: blur(2px) hue-rotate(90deg); opacity: 0.8; }
+  40% { transform: translate(15px, -5px) skew(-10deg); filter: blur(1px) hue-rotate(-90deg); opacity: 0.9; }
+  60% { transform: translate(-5px, 10px) skew(5deg); filter: blur(4px) hue-rotate(180deg); opacity: 0.7; }
+  80% { transform: translate(10px, -10px) skew(-5deg); filter: blur(0px) hue-rotate(-180deg); opacity: 0.9; }
+  100% { transform: translate(0) skew(0deg); filter: blur(0px) hue-rotate(0deg); opacity: 1; }
+}
+
+.global-glitch-active main {
+  animation: global-shatter 0.3s cubic-bezier(.25, .46, .45, .94) forwards;
+}
+
+/* Spinning Tracing Borders */
+@property --bg-angle {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0turn;
+}
+
+@keyframes spin-gradient {
+  to {
+    --bg-angle: 1turn;
+  }
+}
+
+.cyber-card::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  z-index: -1;
+  background: conic-gradient(
+    from var(--bg-angle),
+    transparent 0%,
+    transparent 70%,
+    var(--neon-yellow) 90%,
+    var(--neon-cyan) 100%
+  );
+  animation: spin-gradient 3s linear infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.cyber-card:hover::after {
+  opacity: 1;
 }
