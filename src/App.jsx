@@ -96,6 +96,70 @@ const ReactiveBackground = () => {
   );
 };
 
+const TypeWriter = ({ text, delay = 50 }) => {
+  const [currentText, setCurrentText] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    if (currentIndex < text.length) {
+      const timeout = setTimeout(() => {
+        setCurrentText(prevText => prevText + text[currentIndex]);
+        setCurrentIndex(prevIndex => prevIndex + 1);
+      }, delay);
+      return () => clearTimeout(timeout);
+    }
+  }, [currentIndex, delay, text]);
+
+  return <span>{currentText}<span className="typing-cursor"></span></span>;
+};
+
+const BootSequence = ({ onComplete }) => {
+  const [logs, setLogs] = useState([]);
+  
+  const bootLogs = [
+    "INITIALIZING NEURAL LINK...",
+    "LOADING MEMORY CORE: 0x00FF8...",
+    "BYPASSING ICE PROTOCOLS...",
+    "CONNECTING TO NIGHT CITY GRID...",
+    "ACCESS GRANTED."
+  ];
+
+  useEffect(() => {
+    let currentLog = 0;
+    const interval = setInterval(() => {
+      if (currentLog < bootLogs.length) {
+        setLogs(prev => [...prev, bootLogs[currentLog]]);
+        currentLog++;
+      } else {
+        clearInterval(interval);
+        setTimeout(onComplete, 500); // Small delay before hiding
+      }
+    }, 400);
+    
+    return () => clearInterval(interval);
+  }, [onComplete]);
+
+  return (
+    <div className="boot-sequence">
+      {logs.map((log, index) => (
+        <div key={index} className="boot-text">{"> "}{log}</div>
+      ))}
+      {logs.length < bootLogs.length && (
+        <div className="boot-text">{"> "}<span className="typing-cursor"></span></div>
+      )}
+    </div>
+  );
+};
+
+const DataTicker = () => (
+  <div className="data-ticker-container">
+    <div className="data-ticker-content">
+      SYS_LOG: 0x01A NODE 45 SECURE // PACKET LOSS: 0.01% // UPLINK ESTABLISHED // BANDWIDTH: 1.2TB/S // NO THREATS DETECTED // 
+      SYS_LOG: 0x01B NODE 46 SECURE // PACKET LOSS: 0.00% // DATASTREAM SYNCHED // PING: 2ms //
+    </div>
+  </div>
+);
+
 const Navbar = () => (
   <nav style={{
     display: 'flex',
@@ -185,7 +249,7 @@ const Hero = () => {
         }}>
           Hello Chum<br />
         </h1>
-        <p style={{
+        <div style={{
           fontSize: '1.2rem',
           maxWidth: '700px',
           margin: '0 auto 40px',
@@ -193,12 +257,11 @@ const Hero = () => {
           color: '#e0e0e0',
           lineHeight: '1.6',
           borderLeft: '4px solid var(--neon-yellow)',
-          paddingLeft: '20px'
+          paddingLeft: '20px',
+          textAlign: 'left'
         }}>
-          WE HAVE A REPOSITORY TO BUILD. REACTIVE NEURAL SYSTEMS ENGAGED.
-          NIGHT CITY IS WAITING FOR YOUR DEPLOYMENT.
-          NEON YELLOW POWERED INTERFACE STANDING BY.
-        </p>
+          <TypeWriter text="WE HAVE A REPOSITORY TO BUILD. REACTIVE NEURAL SYSTEMS ENGAGED. NIGHT CITY IS WAITING FOR YOUR DEPLOYMENT. NEON YELLOW POWERED INTERFACE STANDING BY." delay={30} />
+        </div>
         <div style={{ display: 'flex', gap: '20px', justifyContent: 'center' }}>
           <button className="cyber-button" style={{ padding: '15px 40px', fontSize: '18px' }}>
             CONNECT LINK
@@ -217,33 +280,75 @@ const Hero = () => {
   );
 };
 
-const FeatureCard = ({ id, title, desc }) => (
-  <div className="cyber-card">
-    <div style={{ color: 'var(--neon-yellow)', opacity: 0.4, fontSize: '12px', marginBottom: '10px' }}>
-      MOD_V{id}
+const FeatureCard = ({ id, title, desc }) => {
+  const cardRef = useRef(null);
+  const [style, setStyle] = useState({});
+
+  const handleMouseMove = (e) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    // Calculate rotation
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = ((y - centerY) / centerY) * -10; // Max 10 deg tilt
+    const rotateY = ((x - centerX) / centerX) * 10;
+    
+    setStyle({
+      transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
+      '--mouse-x': `${(x / rect.width) * 100}%`,
+      '--mouse-y': `${(y / rect.height) * 100}%`
+    });
+  };
+
+  const handleMouseLeave = () => {
+    setStyle({
+      transform: 'rotateX(0deg) rotateY(0deg)',
+      transition: 'transform 0.5s ease',
+      '--mouse-x': '50%',
+      '--mouse-y': '50%'
+    });
+  };
+
+  return (
+    <div 
+      className="cyber-card" 
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={style}
+    >
+      <div className="cyber-card-glare"></div>
+      <div className="cyber-card-content">
+        <div style={{ color: 'var(--neon-yellow)', opacity: 0.4, fontSize: '12px', marginBottom: '10px' }}>
+          MOD_V{id}
+        </div>
+        <h3 style={{
+          borderBottom: '1px solid var(--neon-yellow)',
+          paddingBottom: '10px',
+          marginBottom: '15px',
+          color: 'var(--neon-yellow)'
+        }}>
+          {title}
+        </h3>
+        <p style={{ fontSize: '0.95rem', color: '#bbb', lineHeight: '1.5' }}>{desc}</p>
+        <div style={{
+          position: 'absolute',
+          bottom: '10px',
+          right: '10px',
+          fontSize: '10px',
+          color: 'var(--neon-cyan)',
+          fontFamily: 'monospace',
+          textShadow: '0 0 5px rgba(252, 225, 0, 0.4)'
+        }}>
+          0x0F4_HACKED
+        </div>
+      </div>
     </div>
-    <h3 style={{
-      borderBottom: '1px solid var(--neon-yellow)',
-      paddingBottom: '10px',
-      marginBottom: '15px',
-      color: 'var(--neon-yellow)'
-    }}>
-      {title}
-    </h3>
-    <p style={{ fontSize: '0.95rem', color: '#bbb', lineHeight: '1.5' }}>{desc}</p>
-    <div style={{
-      position: 'absolute',
-      bottom: '10px',
-      right: '10px',
-      fontSize: '10px',
-      color: 'var(--neon-cyan)',
-      fontFamily: 'monospace',
-      textShadow: '0 0 5px rgba(252, 225, 0, 0.4)'
-    }}>
-      0x0F4_HACKED
-    </div>
-  </div>
-);
+  );
+};
 
 const Features = () => (
   <section style={{ padding: '100px 50px', background: 'var(--cyber-black)', position: 'relative' }}>
@@ -280,11 +385,16 @@ const Features = () => (
 );
 
 function App() {
+  const [booting, setBooting] = useState(true);
+
   return (
     <div className="app-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <div className="scanlines"></div>
+      {booting && <BootSequence onComplete={() => setBooting(false)} />}
       <ReactiveBackground />
+      <DataTicker />
       <Navbar />
-      <main style={{ flex: 1, position: 'relative', zIndex: 1 }}>
+      <main style={{ flex: 1, position: 'relative', zIndex: 1, opacity: booting ? 0 : 1, transition: 'opacity 1s ease-in-out' }}>
         <Hero />
         <Features />
       </main>

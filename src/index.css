@@ -411,3 +411,125 @@ h1, h2, h3, h4, h5, h6 {
 .cyber-card:hover::before {
   transform: scaleX(1);
 }
+
+/* === NEW EFFECTS === */
+
+/* Scanlines Overlay */
+.scanlines {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0),
+    rgba(255,255,255,0) 50%,
+    rgba(0,0,0,0.2) 50%,
+    rgba(0,0,0,0.2)
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.8;
+}
+
+/* Boot Sequence */
+.boot-sequence {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--cyber-black);
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  padding: 40px;
+  color: var(--neon-yellow);
+  font-family: monospace;
+  font-size: 1.2rem;
+  overflow: hidden;
+}
+
+.boot-text {
+  margin: 5px 0;
+  text-shadow: 0 0 5px var(--neon-yellow);
+}
+
+/* Typing Effect Cursor */
+.typing-cursor {
+  display: inline-block;
+  width: 10px;
+  height: 1.2em;
+  background-color: var(--neon-yellow);
+  animation: blink 1s step-end infinite;
+  vertical-align: bottom;
+  margin-left: 2px;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Data Ticker */
+.data-ticker-container {
+  overflow: hidden;
+  white-space: nowrap;
+  background: rgba(5, 5, 5, 0.9);
+  border-top: 1px solid var(--neon-yellow-low);
+  border-bottom: 1px solid var(--neon-yellow-low);
+  padding: 5px 0;
+  position: relative;
+  z-index: 10;
+  display: flex;
+  width: 100%;
+}
+
+.data-ticker-content {
+  display: inline-block;
+  font-family: var(--font-cyber);
+  color: var(--neon-cyan);
+  font-size: 12px;
+  text-transform: uppercase;
+  animation: marquee 30s linear infinite;
+  padding-left: 100vw; /* Start off screen */
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-200%); }
+}
+
+/* 3D Holographic Card Effects */
+.cyber-card-glare {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(252, 225, 0, 0.15) 0%,
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 1;
+}
+
+.cyber-card:hover .cyber-card-glare {
+  opacity: 1;
+}
+
+.cyber-card-content {
+  position: relative;
+  z-index: 2;
+}
+
+.cyber-card {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
